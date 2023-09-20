@@ -7,23 +7,45 @@
 
 
 
-int contador_space(int a, int w, const char* vChar, int size){
+int contador_space(int a, int w, const char* vChar, int size, std::string modo){
+    
+
+
+
     int space = 0;
+    int position_left = 0;
+    int position_right = 0;
     bool left = true;
     bool right = true;
-     for (int b = 0; b < w; b++, a++) {
-            if((vChar[(a+b)] == ' ')&&(left == true)){
-                space++;
-            }else{
-                left = false;
+
+
+    for (int b = 0; b < w; b++) {
+        position_left = a+b;
+        position_right = a+w-b-1;
+        if((vChar[(position_left)] == ' ')&&(left == true)){
+            space++;
+        }else{
+            if(modo == "Left"){
+                return position_left;
             }
-            if(((vChar[(a+w-b-1)] == ' ')||(a+w-b > size))&&(right == true)){
-                space++;
-            }else{
-                right = false;
-            }
+            left = false;
         }
-    return space;
+        if(((vChar[(position_right )] == ' ')||(position_right > size))&&(right == true)){
+            space++;
+        }else{
+            if(modo == "Right"){
+                return position_right;
+            }
+            right = false;
+        }
+        if((left == false)&&(right == false)){
+            if (modo == "Space"){
+                return space;
+            }
+            
+        }
+        }
+
 }
 
 
@@ -42,11 +64,11 @@ int contador_space(int a, int w, const char* vChar, int size){
 
 
 int main() {
-    std::string text = "aaa aaa aaa aaa aaa aaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaa          aaaaaaaa";
+    std::string text = "aaaaaaaaa aaaaaaaaaaaaaaa          aaaaaaaa aaaaaaaaaaaaaaaaaa";
     int size = text.size();
     char vChar[size-1];
     int w = 15;
-    int space;
+    int space = 0;
 
     std::cout << size << " Letras \n\n";
     strcpy(vChar, text.c_str());
@@ -58,25 +80,26 @@ int main() {
 
 
     for (int a = 0; a < size-1; a) {
-        std::cout << '| ';
+        std::cout << "| ";
 
-        space = contador_space(a, w, vChar, size);
+        space = (contador_space(a, w, vChar, size, "Space"))/2;
 
         for (int c = 1; c < space; c++){
-            std::cout << ' ';
+            std::cout << " ";
         }
-
-        for (int b = 0; b < w; b++, a++) {
-            if(a < size){
+        int left =  space = (contador_space(a, w, vChar, size, "Left"));
+        int right =  space = (contador_space(a, w, vChar, size, "Right"));
+        for (int b = left; b < right; b++, a++) {
+            if((a < size)&&((vChar[a-1] != ' ')||(vChar[a+1] != ' '))){
                 std::cout << vChar[a];
             }
         }
 
         for (int c = 1; c < space; c++){
-            std::cout << ' ';
+            std::cout << " ";
         }
 
-        std::cout << ' |\n';
+        std::cout << " |\n";
     }
     
 
